@@ -38,6 +38,18 @@ router.post("/", validateProject, async (req, res) => {
   }
 });
 
+router.put("/:id", validateProjectId, validateProject, async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const updateProject = await projectHelper.update(projectId, req.body);
+    res.status(200).json(updateProject);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ Message: "There was an error while updating the project." });
+  }
+});
+
 // This is a custom middleware function to validate project Id
 // The following validations have been performed.
 // 1. Check if the id exist in the req params.

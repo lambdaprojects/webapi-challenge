@@ -104,7 +104,6 @@ async function validateProjectId(req, res, next) {
     if (project_id !== 0 && project_id !== null && project_id !== "") {
       const project = await projectHelper.get(project_id);
       if (project) {
-        //req.project = project;
         next();
       } else {
         res.status(400).json({
