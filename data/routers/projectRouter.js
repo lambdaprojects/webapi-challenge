@@ -27,6 +27,17 @@ router.get("/:id", validateProjectId, async (req, res) => {
   }
 });
 
+router.post("/", validateProject, async (req, res) => {
+  try {
+    const project = await projectHelper.insert(req.body);
+    res.status(200).json(project);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ Message: "There was an error while inserting the project." });
+  }
+});
+
 // This is a custom middleware function to validate project Id
 // The following validations have been performed.
 // 1. Check if the id exist in the req params.
@@ -51,6 +62,25 @@ async function validateProjectId(req, res, next) {
     }
   } else {
     res.status(400).json({ Message: "There is no project id available." });
+  }
+}
+
+//This is a custom middleware to validate a project
+// Following are the validations:
+// 1. Validates the body on a request to create a new project
+// 2. validate if request body is not missing else 400
+// 3. validate if the request body has the name and description field
+function validateProject(req, res, next) {
+  if (req.body) {
+    if (req.body.name && req.body.description) {
+      next();
+    } else {
+      res
+        .status(400)
+        .json({ Message: "Missing required name field or description field" });
+    }
+  } else {
+    res.status(400).json({ Message: "Missing project data." });
   }
 }
 
