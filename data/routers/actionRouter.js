@@ -39,6 +39,24 @@ router.post("/", validateProjectId, validateAction, async (req, res) => {
   }
 });
 
+router.put(
+  "/:id",
+  validateProjectId,
+  validateActionId,
+  validateAction,
+  async (req, res) => {
+    try {
+      const actionId = req.params.id;
+      const updateAction = await actionHelper.update(actionId, req.body);
+      res.status(200).json(updateAction);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ Message: "There was an error while updating the action." });
+    }
+  }
+);
+
 // This is a custom middleware function to validate action Id
 // The following validations have been performed.
 // 1. Check if the id exist in the req params.
