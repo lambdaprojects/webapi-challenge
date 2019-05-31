@@ -2,31 +2,36 @@ const express = require("express");
 const router = express.Router();
 const projectHelper = require("../helpers/projectModel.js");
 
+// GET ALL PROJECTS
 router.get("/", async (req, res) => {
   try {
     const projects = await projectHelper.get();
     if (projects.length > 0) {
       res.status(200).json(projects);
     } else {
-      res.status(400).json({ Message: "There are no projects to display" });
+      res
+        .status(400)
+        .json({ ERROR_MESSAGE: "There are no projects to display" });
     }
   } catch (error) {
     res.status(500).json({
-      ErrorMessage: "There was an error while retrieving the projects."
+      ERROR_MESSAGE: "There was an error while retrieving the projects."
     });
   }
 });
 
+// GET PROJECT FOR THE ID PASSED AS PARAM
 router.get("/:id", validateProjectId, async (req, res) => {
   try {
     res.status(200).json(req.project);
   } catch (error) {
     res.status(500).json({
-      ErrorMessage: "There was an error while retrieving the projects."
+      ERROR_MESSAGE: "There was an error while retrieving the projects."
     });
   }
 });
 
+//ADD A PROJECT
 router.post("/", validateProject, async (req, res) => {
   try {
     const project = await projectHelper.insert(req.body);
@@ -34,10 +39,13 @@ router.post("/", validateProject, async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ Message: "There was an error while inserting the project." });
+      .json({
+        ERROR_MESSAGE: "There was an error while inserting the project."
+      });
   }
 });
 
+//UPDATE A PROJECT
 router.put("/:id", validateProjectId, validateProject, async (req, res) => {
   try {
     const projectId = req.params.id;
@@ -46,29 +54,35 @@ router.put("/:id", validateProjectId, validateProject, async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ Message: "There was an error while updating the project." });
+      .json({
+        ERROR_MESSAGE: "There was an error while updating the project."
+      });
   }
 });
 
+//DELETE A PROJECT
 router.delete("/:id", validateProjectId, async (req, res) => {
   try {
     const projectId = req.params.id;
     const deleteProject = await projectHelper.remove(projectId);
-    res.status(200).json({ Message: "Project deleted successfully." });
+    res.status(200).json({ SUCCESS_MESSAGE: "Project deleted successfully." });
   } catch (error) {
     res
       .status(500)
-      .json({ Message: "There was an error while deleting the project." });
+      .json({
+        ERROR_MESSAGE: "There was an error while deleting the project."
+      });
   }
 });
 
+//GET ACTIONS FOR A PROJECT (PROJECT ID PASSED AS PARAM)
 router.get("/:id/actions", validateProjectId, async (req, res) => {
   try {
     const projectActions = await projectHelper.getProjectActions(req.params.id);
     res.status(200).json(projectActions);
   } catch (error) {
     res.status(500).json({
-      ErrorMessage:
+      ERROR_MESSAGE:
         "There was an error while retrieving the actions for the project."
     });
   }
@@ -88,16 +102,21 @@ async function validateProjectId(req, res, next) {
         next();
       } else {
         res.status(400).json({
-          Message: "No project available for this post id in the database."
+          ERROR_MESSAGE:
+            "No project available for this post id in the database."
         });
       }
     } else {
       res
         .status(400)
-        .json({ Message: "The project id provided is either null or empty." });
+        .json({
+          ERROR_MESSAGE: "The project id provided is either null or empty."
+        });
     }
   } else {
-    res.status(400).json({ Message: "There is no project id available." });
+    res
+      .status(400)
+      .json({ ERROR_MESSAGE: "There is no project id available." });
   }
 }
 
@@ -113,10 +132,12 @@ function validateProject(req, res, next) {
     } else {
       res
         .status(400)
-        .json({ Message: "Missing required name field or description field" });
+        .json({
+          ERROR_MESSAGE: "Missing required name field or description field"
+        });
     }
   } else {
-    res.status(400).json({ Message: "Missing project data." });
+    res.status(400).json({ ERROR_MESSAGE: "Missing project data." });
   }
 }
 

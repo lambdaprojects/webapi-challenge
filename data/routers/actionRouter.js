@@ -3,31 +3,36 @@ const router = express.Router();
 const actionHelper = require("../helpers/actionModel.js");
 const projectHelper = require("../helpers/projectModel.js");
 
+//GET ALL ACTIONS
 router.get("/", async (req, res) => {
   try {
     const actions = await actionHelper.get();
     if (actions.length > 0) {
       res.status(200).json(actions);
     } else {
-      res.status(400).json({ Message: "There are no actions to display" });
+      res
+        .status(400)
+        .json({ ERROR_MESSAGE: "There are no actions to display" });
     }
   } catch (error) {
     res.status(500).json({
-      ErrorMessage: "There was an error while retrieving the actions."
+      ERROR_MESSAGE: "There was an error while retrieving the actions."
     });
   }
 });
 
+//GET AN ACTION FOR THE ACTION ID PASSED AS PARAM
 router.get("/:id", validateActionId, async (req, res) => {
   try {
     res.status(200).json(req.action);
   } catch (error) {
     res.status(500).json({
-      ErrorMessage: "There was an error while retrieving the actions."
+      ERROR_MESSAGE: "There was an error while retrieving the actions."
     });
   }
 });
 
+//ADD AN ACTION
 router.post("/", validateProjectId, validateAction, async (req, res) => {
   try {
     const action = await actionHelper.insert(req.body);
@@ -35,10 +40,13 @@ router.post("/", validateProjectId, validateAction, async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ Message: "There was an error while inserting the action." });
+      .json({
+        ERROR_MESSAGE: "There was an error while inserting the action."
+      });
   }
 });
 
+//UPDATE AN ACTION
 router.put(
   "/:id",
   validateProjectId,
@@ -52,20 +60,23 @@ router.put(
     } catch (error) {
       res
         .status(500)
-        .json({ Message: "There was an error while updating the action." });
+        .json({
+          ERROR_MESSAGE: "There was an error while updating the action."
+        });
     }
   }
 );
 
+//DELETE AN ACTION
 router.delete("/:id", validateActionId, async (req, res) => {
   try {
     const actionId = req.params.id;
     const deleteAction = await actionHelper.remove(actionId);
-    res.status(200).json({ Message: "Action deleted successfully." });
+    res.status(200).json({ SUCCESS_MESSAGE: "Action deleted successfully." });
   } catch (error) {
     res
       .status(500)
-      .json({ Message: "There was an error while deleting the action." });
+      .json({ ERROR_MESSAGE: "There was an error while deleting the action." });
   }
 });
 
@@ -83,16 +94,18 @@ async function validateActionId(req, res, next) {
         next();
       } else {
         res.status(400).json({
-          Message: "No action available for this post id in the database."
+          ERROR_MESSAGE: "No action available for this post id in the database."
         });
       }
     } else {
       res
         .status(400)
-        .json({ Message: "The action id provided is either null or empty." });
+        .json({
+          ERROR_MESSAGE: "The action id provided is either null or empty."
+        });
     }
   } else {
-    res.status(400).json({ Message: "There is no action id available." });
+    res.status(400).json({ ERROR_MESSAGE: "There is no action id available." });
   }
 }
 
@@ -111,15 +124,19 @@ function validateAction(req, res, next) {
       } else {
         res
           .status(400)
-          .json({ Message: "Description is greater than 128 characters." });
+          .json({
+            ERROR_MESSAGE: "Description is greater than 128 characters."
+          });
       }
     } else {
       res
         .status(400)
-        .json({ Message: "Missing required name field or description field" });
+        .json({
+          ERROR_MESSAGE: "Missing required name field or description field"
+        });
     }
   } else {
-    res.status(400).json({ Message: "Missing project data." });
+    res.status(400).json({ ERROR_MESSAGE: "Missing project data." });
   }
 }
 
@@ -137,16 +154,21 @@ async function validateProjectId(req, res, next) {
         next();
       } else {
         res.status(400).json({
-          Message: "No project available for this post id in the database."
+          ERROR_MESSAGE:
+            "No project available for this post id in the database."
         });
       }
     } else {
       res
         .status(400)
-        .json({ Message: "The project id provided is either null or empty." });
+        .json({
+          ERROR_MESSAGE: "The project id provided is either null or empty."
+        });
     }
   } else {
-    res.status(400).json({ Message: "There is no project id available." });
+    res
+      .status(400)
+      .json({ ERROR_MESSAGE: "There is no project id available." });
   }
 }
 
