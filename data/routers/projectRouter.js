@@ -50,6 +50,18 @@ router.put("/:id", validateProjectId, validateProject, async (req, res) => {
   }
 });
 
+router.delete("/:id", validateProjectId, async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const deleteProject = await projectHelper.remove(projectId);
+    res.status(200).json({ Message: "Project deleted successfully." });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ Message: "There was an error while deleting the project." });
+  }
+});
+
 // This is a custom middleware function to validate project Id
 // The following validations have been performed.
 // 1. Check if the id exist in the req params.
