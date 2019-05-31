@@ -25,14 +25,36 @@ In this challenge, create a web API around the following resources: `Projects` a
 Demonstrate your understanding of this Sprint's concepts by answering the following free-form questions. Edit this document to include your answers after each question. Make sure to leave a blank line above and below your answer so it is clear and easy to read by your project manager.
 
 - [ ] Mention two parts of Express that you learned about this week.
+      ##Answer
+      Two important parts of Express that we learnt this week:
+
+        1. Routing - Routing is a way to select and execute a request handler based on the URL visited and the
+        http method used.This helps to break the application into smaller parts based on the route.
+        2. Middleware support - Middleware are functions that take the request and response objects, operate on them.
+        They can either return a response or call the next middleware in the pipeline. Express's middleware stack
+        is effectively an array of functions.
 
 - [ ] Describe Middleware?
+      ##Answer
+      Middleware is a function that take the request and response objects, operate on them.
+      They can either return a response or call the next middleware in the pipeline. Express's middleware stack
+      is effectively an array of functions.
 
 - [ ] Describe a Resource?
+      ##Answer
+      Everything is a resource. Any static or dynamic content that needs to be served for a request through a
+      response is a resource. The resources are accessible via unique Uniform Resource Indicator. They can have
+      multiple representations. We can manage the resources via HTTP methods - get, post, put and delete.
 
 - [ ] What can the API return to help clients know if a request was successful?
+      ##Answer
+      The API can return status codes to help clients know if a request was successful or not. Status code - 200s
+      refer to success, while 400s - client side error and 500s application server side error.
 
 - [ ] How can we partition our application into sub-applications?
+      ##Answer
+      Express routers are a way to split an application into sub-applications to make it more modular and easier
+      to maintain.
 
 ## Project Setup
 
