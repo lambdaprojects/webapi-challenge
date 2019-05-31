@@ -57,6 +57,18 @@ router.put(
   }
 );
 
+router.delete("/:id", validateActionId, async (req, res) => {
+  try {
+    const actionId = req.params.id;
+    const deleteAction = await actionHelper.remove(actionId);
+    res.status(200).json({ Message: "Action deleted successfully." });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ Message: "There was an error while deleting the action." });
+  }
+});
+
 // This is a custom middleware function to validate action Id
 // The following validations have been performed.
 // 1. Check if the id exist in the req params.
