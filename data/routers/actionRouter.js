@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const actionHelper = require("../helpers/actionModel.js");
+const projectHelper = require("../helpers/projectModel.js");
 
 router.get("/", async (req, res) => {
   try {
@@ -24,6 +25,17 @@ router.get("/:id", validateActionId, async (req, res) => {
     res.status(500).json({
       ErrorMessage: "There was an error while retrieving the actions."
     });
+  }
+});
+
+router.post("/", validateProjectId, validateAction, async (req, res) => {
+  try {
+    const action = await actionHelper.insert(req.body);
+    res.status(200).json(action);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ Message: "There was an error while inserting the action." });
   }
 });
 
@@ -51,6 +63,61 @@ async function validateActionId(req, res, next) {
     }
   } else {
     res.status(400).json({ Message: "There is no action id available." });
+  }
+}
+
+//This is a custom middleware to validate an action
+// Following are the validations:
+// 1. Validates the body on a request to create a new action
+// 2. validate if request body is not missing else 400
+// 3. validate if the request body has the projectId, notes and description field
+// 4. Validates if the projectId is a valid project id.
+// 5. Validates if the description size is not greater than 128
+function validateAction(req, res, next) {
+  if (req.body) {
+    if (req.body.notes && req.body.description) {
+      if (req.body.description.length < 129) {
+        next();
+      } else {
+        res
+          .status(400)
+          .json({ Message: "Description is greater than 128 characters." });
+      }
+    } else {
+      res
+        .status(400)
+        .json({ Message: "Missing required name field or description field" });
+    }
+  } else {
+    res.status(400).json({ Message: "Missing project data." });
+  }
+}
+
+// This is a custom middleware function to validate project Id
+// The following validations have been performed.
+// 1. Check if the id exist in the req params.
+// 2. Check if id is not null 0 or empty string
+// 3. Check if the id is available in the database
+async function validateProjectId(req, res, next) {
+  if (req.body.project_id) {
+    const project_id = req.body.project_id;
+    if (project_id !== 0 && project_id !== null && project_id !== "") {
+      const project = await projectHelper.get(project_id);
+      if (project) {
+        //req.project = project;
+        next();
+      } else {
+        res.status(400).json({
+          Message: "No project available for this post id in the database."
+        });
+      }
+    } else {
+      res
+        .status(400)
+        .json({ Message: "The project id provided is either null or empty." });
+    }
+  } else {
+    res.status(400).json({ Message: "There is no project id available." });
   }
 }
 
