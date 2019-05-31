@@ -15,7 +15,7 @@
   width: 20%;
   overflow: hidden;
   border: 1px solid red;
-  height: 80px;
+  height: auto;
   margin: 2%;
   font-size: 12px;
   text-align: justify;

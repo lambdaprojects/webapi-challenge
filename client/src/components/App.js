@@ -1,30 +1,27 @@
 import React from "react";
 
 import "./App.css";
-import { connect } from "react-redux";
-import { getProjects } from "../actions";
+
+import { Route } from "react-router-dom";
+import Project from "./Project";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
   }
 
-  componentDidMount() {
-    console.log(":: COMPONENT DID MOUNT ::");
-    this.props.getProjects();
-  }
-
   render() {
     return (
       <div className="App">
         <h1> List of Projects!</h1>
-        <div className="appList">
+        {/* <div className="appList">
           {this.props.projects.map(project => (
             <div className="appCard" key={project.id}>
               <span className="title">Project Name:</span> {project.name}
             </div>
           ))}
-        </div>
+        </div> */}
+        <Route path="/projects" component={Project} />
       </div>
     );
   }
@@ -39,7 +36,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { getProjects }
-)(App);
+export default App;
