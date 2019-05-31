@@ -62,6 +62,18 @@ router.delete("/:id", validateProjectId, async (req, res) => {
   }
 });
 
+router.get("/:id/actions", validateProjectId, async (req, res) => {
+  try {
+    const projectActions = await projectHelper.getProjectActions(req.params.id);
+    res.status(200).json(projectActions);
+  } catch (error) {
+    res.status(500).json({
+      ErrorMessage:
+        "There was an error while retrieving the actions for the project."
+    });
+  }
+});
+
 // This is a custom middleware function to validate project Id
 // The following validations have been performed.
 // 1. Check if the id exist in the req params.
